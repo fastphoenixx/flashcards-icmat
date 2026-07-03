@@ -1,0 +1,372 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#15171c">
+<title>Flashcards — ICMAT Prova 3</title>
+<style>
+  :root{
+    --ground:#15171c; --ground-2:#0e1014;
+    --surface:#1c1f27; --surface-2:#232734;
+    --line:rgba(255,255,255,.09); --line-2:rgba(255,255,255,.06);
+    --ink:#edf0f5; --muted:#95a0b1; --faint:#6b7585;
+    --heat:#ff7a33; --heat-soft:rgba(255,122,51,.14);
+    --steel:#6fb0e0; --steel-soft:rgba(111,176,224,.13);
+    --good:#5fd694; --good-soft:rgba(95,214,148,.15);
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono","Cascadia Code","JetBrains Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family:var(--sans); color:var(--ink);
+    background:
+      radial-gradient(120% 80% at 50% -10%, rgba(255,122,51,.10), transparent 55%),
+      radial-gradient(90% 70% at 90% 110%, rgba(111,176,224,.07), transparent 60%),
+      var(--ground);
+    display:flex; flex-direction:column; min-height:100dvh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{width:100%; max-width:660px; margin:0 auto; padding:0 18px}
+
+  /* ---- header ---- */
+  header{padding-top:22px; padding-bottom:14px}
+  .brand{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap}
+  .eb{font-family:var(--mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--faint)}
+  .brand h1{margin:0; font-size:19px; font-weight:650; letter-spacing:-.01em}
+  .brand h1 span{color:var(--muted); font-weight:500}
+  .chips{display:flex; gap:7px; margin-top:16px; flex-wrap:wrap}
+  .chip{
+    font-family:var(--mono); font-size:12px; letter-spacing:.04em;
+    color:var(--muted); background:var(--surface); border:1px solid var(--line);
+    padding:7px 13px; border-radius:999px; cursor:pointer; transition:.16s;
+  }
+  .chip:hover{border-color:rgba(255,255,255,.22); color:var(--ink)}
+  .chip[aria-pressed="true"]{background:#fff; color:#15171c; border-color:#fff; font-weight:600}
+  .chip.ghost[aria-pressed="true"]{background:var(--steel-soft); color:var(--steel); border-color:rgba(111,176,224,.4)}
+
+  .meter{display:flex; align-items:center; gap:12px; margin-top:16px}
+  .bar{flex:1; height:5px; border-radius:99px; background:var(--surface-2); overflow:hidden}
+  .bar>i{display:block; height:100%; width:0; background:linear-gradient(90deg,var(--heat),#ffb37a); border-radius:99px; transition:width .3s ease}
+  .count{font-family:var(--mono); font-size:12px; color:var(--muted); white-space:nowrap; font-variant-numeric:tabular-nums}
+  .count b{color:var(--ink); font-weight:600}
+  .dom{font-family:var(--mono); font-size:11.5px; color:var(--good); white-space:nowrap}
+
+  /* ---- stage ---- */
+  main{flex:1; display:flex; align-items:center; justify-content:center; overflow:auto; padding:12px 0 6px}
+  .stage{width:100%; max-width:660px; padding:0 18px; perspective:1600px}
+  .card{position:relative; cursor:pointer; outline:none}
+  .card:focus-visible .inner{box-shadow:0 0 0 2px var(--heat), 0 24px 60px -28px rgba(0,0,0,.7)}
+  .inner{
+    display:grid; transform-style:preserve-3d; transition:transform .5s cubic-bezier(.2,.7,.2,1);
+    min-height:340px; border-radius:20px;
+    box-shadow:0 24px 60px -30px rgba(0,0,0,.75);
+  }
+  .card.flip .inner{transform:rotateY(180deg)}
+  .face{
+    grid-area:1/1; backface-visibility:hidden; -webkit-backface-visibility:hidden;
+    background:linear-gradient(180deg,var(--surface-2),var(--surface));
+    border:1px solid var(--line); border-radius:20px; padding:26px 26px 24px;
+    display:flex; flex-direction:column; gap:16px; overflow-wrap:anywhere;
+  }
+  .face::before{content:""; position:absolute; inset:0 0 auto 0; height:3px; border-radius:20px 20px 0 0;
+    background:var(--accent,var(--heat)); opacity:.9}
+  .back{transform:rotateY(180deg)}
+  .card.c .face{--accent:var(--steel)}
+  .card.q .face{--accent:var(--heat)}
+
+  .tag{display:flex; align-items:center; justify-content:space-between; gap:10px}
+  .tag .lbl{font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--accent,var(--heat)); font-weight:600}
+  .tag .side{font-family:var(--mono); font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--faint)}
+
+  .term{font-size:26px; line-height:1.18; font-weight:650; letter-spacing:-.015em; text-wrap:balance; margin:auto 0}
+  .stem{font-size:16.5px; line-height:1.5; white-space:pre-line; font-weight:450}
+  .opts{list-style:none; margin:2px 0 0; padding:0; display:flex; flex-direction:column; gap:7px}
+  .opts li{display:flex; gap:10px; align-items:flex-start; font-size:14.5px; line-height:1.42; color:var(--muted)}
+  .opts .k{font-family:var(--mono); font-size:12.5px; color:var(--faint); padding-top:1px; min-width:16px}
+
+  .answer{font-size:17px; line-height:1.5; margin:auto 0; font-weight:450}
+  .answer strong{color:var(--ink); font-weight:650}
+  .gab{display:flex; align-items:center; gap:12px}
+  .gab .letter{font-family:var(--mono); font-weight:700; font-size:22px; color:var(--good);
+    background:var(--good-soft); border:1px solid rgba(95,214,148,.35); border-radius:12px;
+    width:46px; height:46px; display:grid; place-items:center; flex:none}
+  .gab .txt{font-size:15.5px; line-height:1.4; font-weight:550}
+  .explain{font-size:15px; line-height:1.55; color:var(--muted)}
+  .explain b{color:var(--ink); font-weight:600}
+  .hint{margin-top:auto; font-family:var(--mono); font-size:11px; letter-spacing:.05em; color:var(--faint); display:flex; align-items:center; gap:6px}
+  .knownmark{position:absolute; top:16px; right:18px; font-size:12px; color:var(--good); font-family:var(--mono); letter-spacing:.1em; opacity:0; transition:.2s}
+  .card.known .knownmark{opacity:1}
+
+  .empty{width:100%; max-width:660px; text-align:center; padding:40px 24px; color:var(--muted)}
+  .empty .big{font-size:40px; margin-bottom:12px}
+
+  /* ---- controls ---- */
+  footer{padding:14px 0 max(18px,env(safe-area-inset-bottom))}
+  .nav{display:flex; align-items:center; gap:10px}
+  button{font-family:var(--sans); cursor:pointer; border:1px solid var(--line); color:var(--ink);
+    background:var(--surface); border-radius:13px; transition:.15s; font-size:14px}
+  button:hover{border-color:rgba(255,255,255,.25)}
+  button:focus-visible{outline:2px solid var(--heat); outline-offset:2px}
+  button:active{transform:translateY(1px)}
+  .arrow{width:52px; height:52px; font-size:20px; display:grid; place-items:center; flex:none; color:var(--muted)}
+  .flipbtn{flex:1; height:52px; font-weight:650; font-size:15.5px; letter-spacing:.01em;
+    background:var(--heat); color:#1a0f06; border-color:var(--heat)}
+  .flipbtn:hover{background:#ff8c4d; border-color:#ff8c4d}
+  .sub{display:flex; gap:9px; margin-top:11px; flex-wrap:wrap; justify-content:center}
+  .sub button{padding:9px 15px; font-size:13px; color:var(--muted); font-family:var(--mono); letter-spacing:.03em}
+  .sub button:hover{color:var(--ink)}
+  .sub button.on{background:var(--good-soft); border-color:rgba(95,214,148,.4); color:var(--good)}
+  .kbd{font-family:var(--mono); font-size:11px; color:var(--faint); text-align:center; margin-top:12px; letter-spacing:.03em}
+  .kbd b{color:var(--muted); font-weight:500}
+
+  @media (max-width:520px){
+    .term{font-size:23px}
+    .arrow{width:46px;height:50px}
+    .kbd{display:none}
+    .inner{min-height:320px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .inner{transition:none}
+    .bar>i{transition:none}
+  }
+</style>
+
+<header>
+  <div class="wrap">
+    <div class="brand">
+      <span class="eb">ICMAT · Prova 3 · 2026.1 (A)</span>
+    </div>
+    <div class="brand" style="margin-top:4px">
+      <h1>Ciência dos Materiais <span>— revisão relâmpago</span></h1>
+    </div>
+    <div class="chips" role="group" aria-label="Filtrar baralho">
+      <button class="chip" data-deck="all" aria-pressed="true">Tudo</button>
+      <button class="chip ghost" data-deck="c" aria-pressed="false">Conceitos</button>
+      <button class="chip" data-deck="q" aria-pressed="false">Questões</button>
+    </div>
+    <div class="meter">
+      <span class="count">carta <b id="pos">1</b> / <span id="total">26</span></span>
+      <div class="bar"><i id="progfill"></i></div>
+      <span class="dom" id="dom">dominadas 0/26</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="stage">
+    <div class="card" id="card" tabindex="0" role="button" aria-label="Flashcard — toque para virar">
+      <span class="knownmark">✓ dominada</span>
+      <div class="inner">
+        <div class="face front" id="front"></div>
+        <div class="face back" id="back"></div>
+      </div>
+    </div>
+    <div class="empty" id="empty" hidden>
+      <div class="big">✓</div>
+      <div>Você dominou tudo neste filtro.<br>Troque o filtro ou reinicie para revisar de novo.</div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="nav">
+      <button class="arrow" id="prev" aria-label="Anterior">‹</button>
+      <button class="flipbtn" id="flip">Virar carta</button>
+      <button class="arrow" id="next" aria-label="Próxima">›</button>
+    </div>
+    <div class="sub">
+      <button id="know">Marcar “sei”</button>
+      <button id="hide">Esconder dominadas</button>
+      <button id="shuffle">Embaralhar</button>
+      <button id="reset">Reiniciar</button>
+    </div>
+    <div class="kbd"><b>←/→</b> navegar · <b>espaço</b> virar · <b>K</b> sei · <b>S</b> embaralhar</div>
+  </div>
+</footer>
+
+<script>
+const CARDS = [
+  // ---------- CONCEITOS ----------
+  {t:"c", term:"Têmpera — o que faz?",
+   ans:"Resfriamento <strong>rápido</strong> do aço → forma <strong>martensita</strong>. Aumenta muito a <strong>dureza</strong> e a resistência, mas deixa o material <strong>frágil</strong>. Quase sempre seguida de revenimento."},
+  {t:"c", term:"Revenimento — objetivo (após a têmpera)",
+   ans:"<strong>Reduz a fragilidade</strong> da martensita e <strong>aumenta a tenacidade</strong>, com pequena perda de dureza. Alivia tensões internas geradas na têmpera."},
+  {t:"c", term:"Recozimento — para que serve?",
+   ans:"<strong>Amolece</strong> o aço: aumenta a <strong>ductilidade</strong>, alivia tensões e <strong>melhora a usinabilidade</strong>. É o tratamento indicado <strong>antes de usinar</strong> uma peça."},
+  {t:"c", term:"Normalização",
+   ans:"Aquecimento seguido de resfriamento <strong>ao ar</strong>. <strong>Refina o grão</strong> e homogeneíza a microestrutura. Propriedades intermediárias entre recozido e temperado."},
+  {t:"c", term:"Cementação — o que muda na superfície?",
+   ans:"<strong>Aumenta</strong> o teor de <strong>carbono</strong> na superfície (difusão de C). Depois da têmpera → superfície <strong>dura</strong> com núcleo tenaz. ⚠️ Ela AUMENTA o carbono, nunca reduz."},
+  {t:"c", term:"Nitretação",
+   ans:"Enriquece a superfície com <strong>nitrogênio</strong> → alta dureza superficial e resistência ao desgaste, feita em <strong>baixa temperatura</strong> (pouca distorção da peça)."},
+  {t:"c", term:"Eixo: superfície dura + núcleo tenaz — como?",
+   ans:"<strong>Cementação (ou nitretação) + têmpera + revenimento.</strong> A superfície fica resistente ao desgaste e o núcleo continua tenaz para absorver impacto."},
+  {t:"c", term:"Material para cabos de energia elétrica",
+   ans:"<strong>Cobre.</strong> Reúne elevada <strong>condutividade elétrica</strong>, boa <strong>ductilidade</strong> e fácil conformação (trefilado em fios)."},
+  {t:"c", term:"Ligas de alumínio — propriedades-chave",
+   ans:"Baixa <strong>densidade</strong> (leves), ótima relação <strong>resistência/peso</strong> (aeronáutica), a camada de <strong>óxido</strong> protege da corrosão. ⚠️ Módulo de elasticidade <strong>menor</strong> que o do aço (~70 vs ~210 GPa) → alumínio é <strong>menos rígido</strong>."},
+  {t:"c", term:"Estrutura de edifício: resistência + solda + baixo custo",
+   ans:"<strong>Aço baixo carbono.</strong> Boa soldabilidade, baixo custo e resistência adequada. (Aço-ferramenta é caro/duro; ferro fundido branco é frágil e não soldável.)"},
+  {t:"c", term:"Ferro fundido cinzento",
+   ans:"Grafita em <strong>lamelas</strong>. Excelente <strong>amortecimento de vibrações</strong> e boa usinabilidade; frágil sob tração. Usado em bases de máquina e blocos de motor."},
+  {t:"c", term:"Ferro fundido nodular (dúctil)",
+   ans:"Grafita <strong>esferoidal</strong> (nódulos) → <strong>maior ductilidade</strong> e resistência que o cinzento. Escolhido quando se precisa de tenacidade."},
+  {t:"c", term:"Ferro fundido branco",
+   ans:"Carbono na forma de <strong>cementita</strong> (<strong>sem grafita</strong>). Muito <strong>duro e frágil</strong>, ótima resistência ao desgaste e <strong>péssima usinabilidade</strong>. Grafita esferoidal é do nodular, não do branco."},
+  {t:"c", term:"Conformação: laminação · extrusão · trefilação · forjamento",
+   ans:"<strong>Laminação</strong> → reduz a espessura (chapas). <strong>Extrusão</strong> → perfis de seção transversal constante. <strong>Trefilação</strong> → fios. <strong>Forjamento</strong> → melhora as propriedades mecânicas (orienta o grão)."},
+  {t:"c", term:"Seleção de materiais na indústria química",
+   ans:"Resistência à <strong>corrosão</strong> é critério central (vida útil + segurança). Considerar <strong>temperatura, pressão e natureza dos fluidos</strong>. Também pesam <strong>custo, disponibilidade e fabricabilidade</strong>. Propriedades mecânicas não são o único fator."},
+  {t:"c", term:"Esferoidização",
+   ans:"Recozimento especial que arredonda a <strong>cementita</strong> → aço mais macio e <strong>usinável</strong>. Aplicado em aços de <strong>alto carbono</strong> antes da usinagem."},
+
+  // ---------- QUESTÕES ----------
+  {t:"q", n:1, stem:"Uma empresa quer fabricar cabos para transmissão de energia elétrica: material com elevada condutividade elétrica, boa ductilidade e fácil conformação. O mais indicado é:",
+   opts:[["A","Ferro fundido"],["B","Aço inoxidável"],["C","Titânio"],["D","Cobre"],["E","Magnésio"]],
+   a:"D", at:"Cobre",
+   ex:"O <b>cobre</b> é o melhor condutor entre as opções, além de dúctil e fácil de trefilar em fios."},
+  {t:"q", n:2, stem:"Após a têmpera, realiza-se o revenimento com o objetivo de:",
+   opts:[["A","aumentar ainda mais a dureza"],["B","reduzir a fragilidade da martensita e aumentar a tenacidade"],["C","formar perlita"],["D","reduzir o teor de carbono"],["E","promover recristalização completa"]],
+   a:"B", at:"reduzir a fragilidade da martensita e aumentar a tenacidade",
+   ex:"O revenimento <b>alivia a fragilidade</b> deixada pela têmpera e devolve <b>tenacidade</b>, sacrificando um pouco de dureza."},
+  {t:"q", n:3, stem:"Sobre as ligas de alumínio, assinale a alternativa INCORRETA:",
+   opts:[["A","usadas na aeronáutica pela relação resistência/peso"],["B","boa resistência à corrosão pela camada de óxido"],["C","densidade inferior à dos aços"],["D","empregadas para reduzir a massa de componentes"],["E","módulo de elasticidade superior ao do aço, mais rígidas"]],
+   a:"E", at:"módulo de elasticidade superior ao do aço (INCORRETA)",
+   ex:"O módulo de elasticidade do alumínio (~70 GPa) é <b>menor</b> que o do aço (~210 GPa) → o alumínio é <b>menos rígido</b>, não mais."},
+  {t:"q", n:4, stem:"Tratamentos térmicos dos aços (V/F):\nI. A têmpera aumenta muito a dureza\nII. O revenimento reduz a fragilidade da martensita\nIII. O recozimento aumenta a ductilidade\nIV. A cementação reduz o carbono da superfície",
+   opts:[["A","V – V – F – F"],["B","V – F – V – F"],["C","F – V – V – V"],["D","V – V – V – F"],["E","F – F – V – V"]],
+   a:"D", at:"V – V – V – F",
+   ex:"I, II e III verdadeiras. <b>IV é falsa</b>: a cementação <b>aumenta</b> o carbono da superfície."},
+  {t:"q", n:5, stem:"Na fabricação de um eixo automotivo deseja-se elevada dureza superficial SEM comprometer a tenacidade do núcleo. Tratamento mais adequado:",
+   opts:[["A","Recozimento"],["B","Cementação seguida de têmpera e revenimento"],["C","Normalização"],["D","Esferoidização"],["E","Homogeneização"]],
+   a:"B", at:"Cementação + têmpera + revenimento",
+   ex:"O endurecimento superficial (cementação) seguido de têmpera e revenimento dá <b>superfície dura</b> mantendo o <b>núcleo tenaz</b>."},
+  {t:"q", n:6, stem:"Estrutura metálica de um edifício: material com boa resistência mecânica, elevada soldabilidade e baixo custo. O mais indicado é:",
+   opts:[["A","Ferro fundido branco"],["B","Aço ferramenta"],["C","Aço baixo carbono"],["D","Liga de magnésio"],["E","Bronze"]],
+   a:"C", at:"Aço baixo carbono",
+   ex:"O <b>aço baixo carbono</b> é soldável, barato e resistente o suficiente para estruturas. As outras opções falham em custo, soldabilidade ou fragilidade."},
+  {t:"q", n:7, stem:"Sobre os ferros fundidos, assinale a alternativa INCORRETA:",
+   opts:[["A","cinzento: ótimo amortecimento de vibrações"],["B","nodular: mais dúctil que o cinzento"],["C","branco: dureza elevada pela cementita"],["D","branco: ótima usinabilidade pela grafita esferoidal"],["E","tipos com aplicações distintas conforme a microestrutura"]],
+   a:"D", at:"branco tem ótima usinabilidade (INCORRETA)",
+   ex:"O ferro fundido <b>branco não tem grafita</b> (C está como cementita): é duro, frágil e de <b>péssima usinabilidade</b>. Grafita esferoidal é do <b>nodular</b>."},
+  {t:"q", n:8, stem:"Processos de conformação mecânica (V/F):\nI. A laminação reduz a espessura de chapas\nII. A extrusão fabrica perfis de seção transversal constante\nIII. A trefilação é empregada na fabricação de fios\nIV. O forjamento pode melhorar as propriedades mecânicas",
+   opts:[["A","V – V – V – V"],["B","V – V – F – V"],["C","V – F – V – F"],["D","F – V – V – V"],["E","F – F – V – V"]],
+   a:"A", at:"V – V – V – V",
+   ex:"<b>Todas verdadeiras.</b> Cada processo descrito corresponde exatamente à sua função de conformação."},
+  {t:"q", n:9, stem:"Uma peça de aço será usinada antes do tratamento térmico final. Para facilitar a usinagem, recomenda-se realizar previamente:",
+   opts:[["A","têmpera"],["B","cementação"],["C","nitretação"],["D","recozimento"],["E","revenimento"]],
+   a:"D", at:"recozimento",
+   ex:"O <b>recozimento amolece</b> o aço e melhora a usinabilidade. Têmpera/cementação/nitretação endureceriam a peça, dificultando a usinagem."},
+  {t:"q", n:10, stem:"Reator para ácido sulfúrico concentrado — critérios de seleção de materiais (V/F):\nI. Resistência à corrosão é critério principal (vida útil + segurança)\nII. Basta considerar as propriedades mecânicas; a corrosão é totalmente eliminada por manutenção\nIII. Temperatura, pressão e natureza dos fluidos importam na escolha\nIV. Fatores econômicos, disponibilidade e fabricabilidade também influenciam",
+   opts:[["A","V – V – F – V"],["B","V – F – V – V"],["C","F – F – V – V"],["D","V – F – F – V"],["E","F – V – V – F"]],
+   a:"B", at:"V – F – V – V",
+   ex:"I, III e IV verdadeiras. <b>II é falsa</b>: não se considera apenas o mecânico e a corrosão <b>não</b> é totalmente eliminada por manutenção."},
+];
+
+const $ = s => document.querySelector(s);
+const card=$("#card"), front=$("#front"), back=$("#back"), empty=$("#empty");
+let order = CARDS.map((_,i)=>i);
+let deck="all", hideKnown=false, cursor=0, flipped=false;
+const known = new Set();
+
+function deckMatch(id){ return deck==="all" || CARDS[id].t===deck; }
+function visible(){ return order.filter(id => deckMatch(id) && (!hideKnown || !known.has(id))); }
+
+function renderFront(c){
+  if(c.t==="c"){
+    return '<div class="tag"><span class="lbl">Conceito</span><span class="side">pergunta</span></div>'+
+           '<div class="term">'+c.term+'</div>'+
+           '<div class="hint">↺ toque para ver a resposta</div>';
+  }
+  const opts = c.opts.map(o=>'<li><span class="k">'+o[0]+'</span><span>'+o[1]+'</span></li>').join("");
+  return '<div class="tag"><span class="lbl">Questão '+c.n+'</span><span class="side">enunciado</span></div>'+
+         '<div class="stem">'+c.stem+'</div>'+
+         '<ul class="opts">'+opts+'</ul>'+
+         '<div class="hint">↺ toque para o gabarito</div>';
+}
+function renderBack(c){
+  if(c.t==="c"){
+    return '<div class="tag"><span class="lbl">Resposta</span><span class="side">conceito</span></div>'+
+           '<div class="answer">'+c.ans+'</div>';
+  }
+  return '<div class="tag"><span class="lbl">Gabarito · Q'+c.n+'</span><span class="side">resposta</span></div>'+
+         '<div class="gab"><span class="letter">'+c.a+'</span><span class="txt">'+c.at+'</span></div>'+
+         '<div class="explain">'+c.ex+'</div>';
+}
+
+function render(){
+  const vis = visible();
+  const total = vis.length;
+  document.querySelector(".stage").hidden = false;
+  if(total===0){
+    card.style.display="none"; empty.hidden=false;
+  }else{
+    card.style.display=""; empty.hidden=true;
+    if(cursor>=total) cursor=total-1;
+    if(cursor<0) cursor=0;
+    const id = vis[cursor], c = CARDS[id];
+    card.classList.remove("flip"); flipped=false;
+    card.classList.toggle("c", c.t==="c");
+    card.classList.toggle("q", c.t==="q");
+    card.classList.toggle("known", known.has(id));
+    front.innerHTML = renderFront(c);
+    back.innerHTML = renderBack(c);
+    card.dataset.id = id;
+  }
+  // meters
+  $("#pos").textContent = total? (cursor+1):0;
+  $("#total").textContent = total;
+  $("#progfill").style.width = total? (((cursor+1)/total)*100+"%") : "0%";
+  const deckIds = order.filter(deckMatch);
+  const dk = deckIds.filter(id=>known.has(id)).length;
+  $("#dom").textContent = "dominadas "+dk+"/"+deckIds.length;
+  $("#know").classList.toggle("on", total && known.has(vis[cursor]));
+  $("#hide").classList.toggle("on", hideKnown);
+}
+
+function flip(){ if(card.style.display==="none")return; flipped=!flipped; card.classList.toggle("flip",flipped); }
+function go(d){ const t=visible().length; if(!t)return; cursor=(cursor+d+t)%t; render(); }
+function markKnown(){
+  const vis=visible(); if(!vis.length)return;
+  const id=vis[cursor];
+  if(known.has(id)) known.delete(id); else known.add(id);
+  render();
+}
+// deterministic-ish shuffle (no Math.random dependency issues)
+function shuffle(){
+  let seed = (Date.now?Date.now():order.length*97) ^ (cursor*2654435761);
+  const rnd=()=>{ seed=(seed*1664525+1013904223)>>>0; return seed/4294967296; };
+  for(let i=order.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); [order[i],order[j]]=[order[j],order[i]]; }
+  cursor=0; render();
+}
+
+// events
+document.querySelectorAll(".chip").forEach(ch=>ch.addEventListener("click",()=>{
+  document.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed","false"));
+  ch.setAttribute("aria-pressed","true");
+  deck=ch.dataset.deck; cursor=0; render();
+}));
+card.addEventListener("click", flip);
+$("#flip").addEventListener("click", flip);
+$("#prev").addEventListener("click", ()=>go(-1));
+$("#next").addEventListener("click", ()=>go(1));
+$("#know").addEventListener("click", markKnown);
+$("#hide").addEventListener("click", ()=>{ hideKnown=!hideKnown; cursor=0; render(); });
+$("#shuffle").addEventListener("click", shuffle);
+$("#reset").addEventListener("click", ()=>{ known.clear(); hideKnown=false; deck="all";
+  document.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed", x.dataset.deck==="all"?"true":"false"));
+  order=CARDS.map((_,i)=>i); cursor=0; render(); });
+
+document.addEventListener("keydown",e=>{
+  const tag=(e.target.tagName||"");
+  if(e.key==="ArrowRight"){ go(1); e.preventDefault(); }
+  else if(e.key==="ArrowLeft"){ go(-1); e.preventDefault(); }
+  else if(e.key===" "||e.key==="Enter"){ if(tag==="BUTTON")return; flip(); e.preventDefault(); }
+  else if(e.key==="k"||e.key==="K"){ markKnown(); }
+  else if(e.key==="s"||e.key==="S"){ shuffle(); }
+});
+
+render();
+</script>
+</head><body></body></html>
