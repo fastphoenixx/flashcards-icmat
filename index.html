@@ -1,7 +1,7 @@
 <!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#15171c">
-<title>Flashcards — ICMAT Prova 3</title>
+<title>Flashcards — ICMAT Prova Substituta</title>
 <style>
   :root{
     --ground:#15171c; --ground-2:#0e1014;
@@ -34,6 +34,7 @@
   .brand h1{margin:0; font-size:19px; font-weight:650; letter-spacing:-.01em}
   .brand h1 span{color:var(--muted); font-weight:500}
   .chips{display:flex; gap:7px; margin-top:16px; flex-wrap:wrap}
+  .chips+.chips{margin-top:8px}
   .chip{
     font-family:var(--mono); font-size:12px; letter-spacing:.04em;
     color:var(--muted); background:var(--surface); border:1px solid var(--line);
@@ -134,20 +135,26 @@
 <header>
   <div class="wrap">
     <div class="brand">
-      <span class="eb">ICMAT · Prova 3 · 2026.1 (A)</span>
+      <span class="eb">ICMAT · Prova Substituta · 13/07 · 19h</span>
     </div>
     <div class="brand" style="margin-top:4px">
-      <h1>Ciência dos Materiais <span>— revisão relâmpago</span></h1>
+      <h1>Ciência dos Materiais <span>— semestre completo</span></h1>
     </div>
-    <div class="chips" role="group" aria-label="Filtrar baralho">
+    <div class="chips" role="group" aria-label="Filtrar por tipo">
       <button class="chip" data-deck="all" aria-pressed="true">Tudo</button>
       <button class="chip ghost" data-deck="c" aria-pressed="false">Conceitos</button>
       <button class="chip" data-deck="q" aria-pressed="false">Questões</button>
     </div>
+    <div class="chips" role="group" aria-label="Filtrar por bloco de prova">
+      <button class="chip" data-pdeck="all" aria-pressed="true">Semestre</button>
+      <button class="chip" data-pdeck="1" aria-pressed="false">P1 · cristais/prop. mec.</button>
+      <button class="chip" data-pdeck="2" aria-pressed="false">P2 · discord./fases</button>
+      <button class="chip" data-pdeck="3" aria-pressed="false">P3 · trat. térm./ligas</button>
+    </div>
     <div class="meter">
-      <span class="count">carta <b id="pos">1</b> / <span id="total">26</span></span>
+      <span class="count">carta <b id="pos">1</b> / <span id="total">97</span></span>
       <div class="bar"><i id="progfill"></i></div>
-      <span class="dom" id="dom">dominadas 0/26</span>
+      <span class="dom" id="dom">dominadas 0/97</span>
     </div>
   </div>
 </header>
@@ -187,78 +194,265 @@
 
 <script>
 const CARDS = [
-  // ---------- CONCEITOS ----------
-  {t:"c", term:"Têmpera — o que faz?",
+  // ================= BLOCO P1 — ESTRUTURA CRISTALINA, DEFEITOS/DIFUSÃO, PROP. MECÂNICAS =================
+  // ---------- CONCEITOS P1 ----------
+  {t:"c", p:1, term:"Célula unitária — o que é?",
+   ans:"É a <strong>menor unidade repetitiva</strong> da estrutura tridimensional, escolhida para representar a <strong>simetria</strong> da estrutura cristalina (átomos como esferas rígidas). Materiais <strong>amorfos</strong> não têm ordem de longo alcance."},
+  {t:"c", p:1, term:"Tabela do sistema cúbico: átomos · coordenação · empacotamento",
+   ans:"<strong>CS:</strong> 1 átomo · NC 6 · FEA <strong>0,52</strong> (por isso metais não cristalizam em CS)\n<strong>CCC:</strong> 2 átomos · NC 8 · FEA <strong>0,68</strong>\n<strong>CFC:</strong> 4 átomos · NC 12 · FEA <strong>0,74</strong>"},
+  {t:"c", p:1, term:"Parâmetro de rede × raio atômico (a ↔ R)",
+   ans:"<strong>CS:</strong> a = 2R (tocam na aresta)\n<strong>CCC:</strong> a = 4R/√3 — tocam na <strong>diagonal do cubo</strong>\n<strong>CFC:</strong> a = 2R√2 = 4R/√2 — tocam na <strong>diagonal da face</strong>"},
+  {t:"c", p:1, term:"Estrutura CCC — características e exemplos",
+   ans:"<strong>2 átomos</strong>/célula, NC <strong>8</strong>, FEA <strong>0,68</strong>. Átomos se tocam na diagonal do cubo → direção compacta <strong>&lt;111&gt;</strong>, plano mais denso <strong>{110}</strong>. Cristalizam em CCC: <strong>Fe α, Cr, W</strong>."},
+  {t:"c", p:1, term:"Estrutura CFC — características e exemplos",
+   ans:"<strong>4 átomos</strong>/célula, NC <strong>12</strong>, FEA <strong>0,74</strong>. É o sistema <strong>mais comum</strong> nos metais: <strong>Al, Cu, Pb, Ag, Ni, Fe γ</strong>. Direção compacta <strong>&lt;110&gt;</strong> (diagonal da face), plano mais denso <strong>{111}</strong>."},
+  {t:"c", p:1, term:"Estrutura HC — características e exemplos",
+   ans:"NC <strong>12</strong> e FEA <strong>0,74</strong> (mesmos da CFC). Exemplos: <strong>Mg, Zn, Ti α</strong>. Tem <strong>poucos sistemas de escorregamento</strong> (3–6) → metais HC tendem a ser <strong>frágeis</strong>."},
+  {t:"c", p:1, term:"Polimorfismo / alotropia",
+   ans:"O material pode ter <strong>mais de uma estrutura cristalina</strong> conforme temperatura e pressão. Muda <strong>densidade</strong> e outras propriedades. Exemplos: <strong>Fe, Ti, C</strong> (grafite/diamante), SiC."},
+  {t:"c", p:1, term:"Alotropia do ferro — sequência com a temperatura",
+   ans:"<strong>Fe α (CCC)</strong> até ~912 °C → <strong>Fe γ (CFC)</strong> de 912 a 1394 °C → <strong>Fe δ (CCC)</strong> de 1394 °C até fundir (1538 °C). Decorar: <strong>CCC → CFC → CCC</strong>."},
+  {t:"c", p:1, term:"Alotropia do titânio",
+   ans:"<strong>Fase α:</strong> até 883 °C, estrutura <strong>HC</strong>, é <strong>mole</strong>. <strong>Fase β:</strong> acima de 883 °C, estrutura <strong>CCC</strong>, é <strong>dura</strong>."},
+  {t:"c", p:1, term:"Densidade a partir da estrutura cristalina",
+   ans:"<strong>ρ = nA / (V<sub>C</sub>·N<sub>A</sub>)</strong>\nn = átomos por célula · A = peso atômico · V<sub>C</sub> = volume da célula · N<sub>A</sub> = 6,02×10²³ átomos/mol."},
+  {t:"c", p:1, term:"Notação: direções e planos cristalográficos",
+   ans:"Direção: <strong>[uvw]</strong>; família de direções: <strong>&lt;uvw&gt;</strong>. Plano (índices de <strong>Miller</strong>, recíprocos das interseções): <strong>(hkl)</strong>; família de planos: <strong>{hkl}</strong>. Índice negativo = <strong>barra</strong> sobre o número; reduzir a inteiros mínimos."},
+  {t:"c", p:1, term:"Onde ocorre o deslizamento (deformação plástica)?",
+   ans:"Nos <strong>planos mais densamente empacotados</strong> e, dentro deles, nas <strong>direções de maior densidade atômica</strong>.\n<strong>CFC:</strong> {111}&lt;110&gt; · <strong>CCC:</strong> {110}&lt;111&gt;"},
+  {t:"c", p:1, term:"Defeitos cristalinos — classificação por dimensão",
+   ans:"<strong>Pontuais (0D):</strong> lacunas, intersticiais, substitucionais.\n<strong>Lineares (1D):</strong> discordâncias.\n<strong>Planares (2D):</strong> contornos de grão, contornos de macla, superfícies."},
+  {t:"c", p:1, term:"Difusão — o que é e o que ela exige?",
+   ans:"Transporte de matéria por <strong>migração dos átomos</strong> na rede. Exige: <strong>sítio adjacente vazio</strong> + <strong>energia</strong> (vibracional) para quebrar ligações. A difusão <strong>aumenta com a temperatura</strong>."},
+  {t:"c", p:1, term:"Difusão por lacuna × difusão intersticial",
+   ans:"<strong>Por lacuna:</strong> autodifusão (metal puro) e interdifusão. <strong>Intersticial:</strong> átomos pequenos (<strong>H, C, N, O</strong>) — é <strong>mais rápida</strong> que por lacuna. A <strong>cementação</strong> é difusão intersticial de C no aço."},
+  {t:"c", p:1, term:"Tensão e deformação de engenharia",
+   ans:"<strong>σ = F/A₀</strong> (MPa) — força sobre a área <strong>inicial</strong>.\n<strong>ε = Δl/l₀</strong> — adimensional (ou %). Determinadas no <strong>ensaio de tração</strong>, o mais comum dos ensaios."},
+  {t:"c", p:1, term:"Lei de Hooke e módulo de elasticidade (E)",
+   ans:"Na região elástica (reversível): <strong>σ = E·ε</strong>. E = <strong>rigidez</strong> do material, ligado às <strong>forças de ligação interatômicas</strong>. Aumento de temperatura ⇒ <strong>diminui</strong> E, σe e LRT, e <strong>aumenta</strong> a ductilidade."},
+  {t:"c", p:1, term:"Coeficiente de Poisson (ν)",
+   ans:"Razão <strong>negativa</strong> entre a deformação <strong>lateral</strong> e a <strong>axial</strong>: ν = −εx/εz. Metais: <strong>0,25 a 0,35</strong>. Valor máximo: <strong>0,5</strong> (sem variação de volume)."},
+  {t:"c", p:1, term:"Limite de escoamento (σe) — como se determina?",
+   ans:"Marca o início da <strong>deformação plástica</strong>. Convenção: reta <strong>paralela à porção elástica</strong> partindo de deformação <strong>0,2%</strong> (0,002); a interseção com a curva é o σe. Aços baixo C mostram escoamento nítido (bandas de Lüders)."},
+  {t:"c", p:1, term:"LRT e tensão/deformação verdadeiras",
+   ans:"<strong>LRT</strong> = tensão máxima da curva (ponto M, onde começa o <strong>pescoço</strong>).\nVerdadeiras: <strong>σv = F/Ai = σ(1+ε)</strong> e <strong>εv = ln(1+ε)</strong> — válidas <strong>até a formação do pescoço</strong>."},
+  {t:"c", p:1, term:"Ductilidade — como medir? Quando é frágil?",
+   ans:"Grau de deformação plástica até a fratura: <strong>AL% = (lf−l₀)/l₀×100</strong> ou <strong>RA% = (A₀−Af)/A₀×100</strong>. Frágil ≈ deformação de fratura <strong>&lt; 5%</strong>."},
+  {t:"c", p:1, term:"Resiliência × Tenacidade",
+   ans:"<strong>Resiliência:</strong> energia <strong>elástica</strong> absorvida e devolvida — <strong>Ur = σe²/2E</strong>. Molas: <strong>alto σe + baixo E</strong>.\n<strong>Tenacidade:</strong> energia total absorvida <strong>até a ruptura</strong> (área sob a curva σ×ε) — exige resistência <strong>e</strong> ductilidade."},
+  {t:"c", p:1, term:"Dureza — definição e por que o ensaio é tão usado",
+   ans:"Resistência à <strong>deformação plástica localizada</strong> (penetração/risco). Ensaios <strong>simples, baratos, quase não destrutivos</strong> e permitem <strong>estimar o LRT</strong> (≈ proporcional a HB). ⚠️ Não é grandeza absoluta: depende da técnica — não comparar escalas diferentes."},
+  {t:"c", p:1, term:"Dureza Brinell (HB)",
+   ans:"Esfera comprimida na superfície (padrão: <strong>10 mm, 3000 kgf, 15 s</strong>); HB = carga / <strong>área da calota</strong> impressa. Mantém-se o <strong>fator de carga F/D²</strong> pra variar esfera/carga. Esfera de aço mede até <strong>~500 HB</strong> (acima: esfera de <strong>WC</strong>)."},
+  {t:"c", p:1, term:"Dureza Rockwell (HR)",
+   ans:"<strong>Pré-carga</strong> (10 kgf; superficial: 3 kgf) + carga principal; mede <strong>diferença de profundidade</strong> — leitura <strong>direta na máquina</strong>. <strong>HRB:</strong> esfera de aço 1,588 mm / 100 kgf (metais dúcteis). <strong>HRC:</strong> cone de diamante / 150 kgf (materiais duros)."},
+  {t:"c", p:1, term:"Dureza Vickers (HV)",
+   ans:"<strong>Pirâmide de diamante</strong>; HV = 1,8544·F/d². Impressões geometricamente similares ⇒ <strong>qualquer carga</strong> dá o mesmo valor; <strong>escala contínua</strong>, ideal para <strong>microdureza</strong>, peças finas e camadas superficiais."},
+  {t:"c", p:1, term:"Ensaio de impacto (Charpy / Izod)",
+   ans:"Um <strong>pêndulo</strong> rompe um corpo de prova <strong>entalhado</strong> (entalhe em V); a energia absorvida = diferença de energia potencial (h₀−h₁). Avalia a <strong>tenacidade ao impacto</strong> e previne fratura frágil em serviço."},
+  {t:"c", p:1, term:"Transição dúctil-frágil — quem apresenta?",
+   ans:"Metais <strong>CCC</strong> apresentam transição nítida com a queda da temperatura. <strong>CFC</strong> (Cu, Al, inox austenítico) e <strong>HC</strong> não apresentam. Favorecem fratura frágil: <strong>entalhe/trinca, alta velocidade de carga, baixa temperatura</strong>."},
+  {t:"c", p:1, term:"Fratura dúctil × fratura frágil",
+   ans:"<strong>Dúctil:</strong> extensa deformação plástica, propagação <strong>lenta</strong>, taça-cone a 45°, típica de <strong>CFC</strong>.\n<strong>Frágil:</strong> por <strong>clivagem</strong>, rápida, perpendicular à tensão, quase sem deformação — <strong>CCC e HC</strong>. <strong>Transgranular</strong> = através do grão; <strong>intergranular</strong> = pelo contorno."},
+
+  // ---------- QUESTÕES P1 ----------
+  {t:"q", p:1, n:1, stem:"Sobre a estrutura cúbica de face centrada (CFC), assinale a alternativa INCORRETA:",
+   opts:[["A","possui 4 átomos por célula unitária"],["B","o número de coordenação é 12"],["C","o fator de empacotamento é 0,74"],["D","os átomos se tocam ao longo da diagonal do cubo"],["E","Al, Cu e Ni cristalizam em CFC"]],
+   a:"D", at:"átomos se tocam na diagonal do CUBO (INCORRETA)",
+   ex:"Na CFC os átomos se tocam na <b>diagonal da face</b> (a = 2R√2). Quem se toca na diagonal do cubo é a <b>CCC</b>."},
+  {t:"q", p:1, n:2, stem:"Sobre a alotropia do ferro (V/F):\nI. À temperatura ambiente o ferro é CCC (ferrita α)\nII. Entre ~912 °C e 1394 °C o ferro é CFC (austenita γ)\nIII. As transformações polimórficas não alteram a densidade\nIV. Acima de 1394 °C o ferro volta a ser CCC (fase δ)",
+   opts:[["A","V – V – F – V"],["B","V – F – V – F"],["C","F – V – V – V"],["D","V – V – V – V"],["E","V – F – F – V"]],
+   a:"A", at:"V – V – F – V",
+   ex:"III é falsa: o polimorfismo é geralmente acompanhado de <b>mudança de densidade</b> e de outras propriedades físicas."},
+  {t:"q", p:1, n:3, stem:"A cementação de uma engrenagem envolve difusão de carbono na superfície do aço. Sobre difusão, é INCORRETO afirmar:",
+   opts:[["A","é necessário um sítio adjacente vazio para o átomo se mover"],["B","a difusão aumenta com a temperatura"],["C","o carbono difunde no ferro por mecanismo intersticial"],["D","a difusão intersticial é mais lenta que a difusão por lacunas"],["E","a autodifusão ocorre em metais puros"]],
+   a:"D", at:"intersticial mais lenta que por lacunas (INCORRETA)",
+   ex:"É o contrário: a difusão <b>intersticial é mais rápida</b> — átomos pequenos (H, C, N, O) se movem entre interstícios sem depender de lacunas."},
+  {t:"q", p:1, n:4, stem:"Uma barra de cobre (E = 110 GPa) com 305 mm de comprimento é tracionada elasticamente com tensão de 276 MPa. O alongamento resultante é de aproximadamente:",
+   opts:[["A","0,77 mm"],["B","7,7 mm"],["C","0,077 mm"],["D","1,54 mm"],["E","0,38 mm"]],
+   a:"A", at:"0,77 mm",
+   ex:"Lei de Hooke: Δl = σ·l₀/E = (276 × 305)/110.000 ≈ <b>0,77 mm</b>. (Exemplo resolvido na aula da professora.)"},
+  {t:"q", p:1, n:5, stem:"Para fabricar uma mola, o ideal é um material com:",
+   opts:[["A","alto limite de escoamento e baixo módulo de elasticidade"],["B","baixo limite de escoamento e alto módulo de elasticidade"],["C","alta ductilidade e baixa resistência"],["D","alta dureza e alta fragilidade"],["E","baixo limite de escoamento e baixa resiliência"]],
+   a:"A", at:"alto σe e baixo E",
+   ex:"Molas exigem alta <b>resiliência</b>: Ur = σe²/2E — maximizada com <b>alto σe</b> (numerador ao quadrado) e <b>baixo E</b>."},
+  {t:"q", p:1, n:6, stem:"Sobre os ensaios de dureza, assinale a alternativa INCORRETA:",
+   opts:[["A","no Rockwell o resultado é lido diretamente na máquina"],["B","no Brinell a dureza relaciona a carga com a área da calota impressa"],["C","o Vickers usa pirâmide de diamante e fornece escala contínua"],["D","valores medidos em HRB e HRC podem ser comparados diretamente entre si"],["E","a dureza se correlaciona com o limite de resistência à tração"]],
+   a:"D", at:"comparar HRB com HRC diretamente (INCORRETA)",
+   ex:"As escalas Rockwell <b>não têm relação entre si</b> — só se comparam materiais ensaiados na <b>mesma escala</b>."},
+  {t:"q", p:1, n:7, stem:"Sobre o ensaio Charpy e a transição dúctil-frágil, é correto afirmar:",
+   opts:[["A","metais CFC apresentam transição dúctil-frágil nítida"],["B","metais CCC apresentam transição nítida com o abaixamento da temperatura"],["C","o ensaio Charpy mede a dureza superficial do material"],["D","a presença de entalhe favorece a fratura dúctil"],["E","alta velocidade de carregamento favorece a fratura dúctil"]],
+   a:"B", at:"CCC apresentam transição nítida",
+   ex:"Quem cristaliza em <b>CCC</b> (aços estruturais) mostra a transição. <b>CFC e HC não</b>; entalhe, baixa T e alta taxa de carga favorecem fratura <b>frágil</b>."},
+  {t:"q", p:1, n:8, stem:"Sobre fratura (V/F):\nI. A fratura dúctil apresenta extensa deformação plástica junto à trinca\nII. A fratura frágil ocorre por clivagem, perpendicular à tensão aplicada\nIII. A fratura intergranular atravessa o interior dos grãos\nIV. Um material dúctil pode romper de forma frágil com entalhe, baixa temperatura e alta taxa de carga",
+   opts:[["A","V – V – F – V"],["B","V – F – V – F"],["C","F – V – V – V"],["D","V – V – V – F"],["E","V – V – V – V"]],
+   a:"A", at:"V – V – F – V",
+   ex:"III é falsa: <b>intergranular</b> se propaga pelos <b>contornos de grão</b>; quem atravessa o grão é a <b>transgranular</b>."},
+
+  // ================= BLOCO P2 — DISCORDÂNCIAS/AUMENTO DE RESISTÊNCIA, DIAGRAMAS E TRANSFORMAÇÕES DE FASE =================
+  // ---------- CONCEITOS P2 ----------
+  {t:"c", p:2, term:"Discordância — que tipo de defeito é?",
+   ans:"Defeito <strong>LINEAR (unidimensional)</strong> — pegadinha clássica: <strong>não é pontual</strong>. É a responsável pela deformação plástica: os metais são ~<strong>10× mais moles</strong> do que seriam sem elas."},
+  {t:"c", p:2, term:"Discordância em aresta × hélice × mista",
+   ans:"<strong>Aresta (cunha/linha):</strong> semiplano extra de átomos; vetor de Burgers <strong>⊥</strong> à linha; zonas de tração e compressão.\n<strong>Hélice (espiral):</strong> distorção por cisalhamento; b <strong>∥</strong> à linha.\n<strong>Mista:</strong> a mais comum nos materiais reais."},
+  {t:"c", p:2, term:"Vetor de Burgers (b)",
+   ans:"Expressa a <strong>magnitude e a direção</strong> da distorção da rede cristalina associada à discordância — a distância de deslocamento dos átomos ao redor dela."},
+  {t:"c", p:2, term:"Sistema de escorregamento",
+   ans:"Combinação do <strong>plano</strong> mais denso com a <strong>direção</strong> mais densa nele.\n<strong>CFC:</strong> {111}&lt;110&gt; — 12 sistemas (dúctil)\n<strong>CCC:</strong> {110}&lt;111&gt; — 12 sistemas (alguns só a alta T)\n<strong>HC:</strong> 3–6 sistemas → <strong>frágil</strong>"},
+  {t:"c", p:2, term:"Deformação plástica em policristais",
+   ans:"A direção de escorregamento <strong>varia de grão para grão</strong>; na maioria dos grãos operam <strong>~2 sistemas</strong>. Um grão bem orientado só desliza quando os vizinhos também podem → policristal exige <strong>mais tensão</strong> que monocristal."},
+  {t:"c", p:2, term:"Densidade de discordâncias — valores típicos",
+   ans:"Solidificação lenta: <strong>10³</strong> disc./mm² · Deformado a frio: <strong>10⁹–10¹⁰</strong> · Deformado + tratado termicamente: <strong>10⁵–10⁶</strong>."},
+  {t:"c", p:2, term:"Maclas — o que são e quando aparecem?",
+   ans:"Contorno com <strong>simetria de espelho</strong> da rede. <strong>Maclas de deformação:</strong> CCC e HC, baixa T e alta taxa de carga (impacto). <strong>Maclas de recozimento:</strong> típicas de <strong>CFC</strong>. Bloqueiam o escorregamento com eficácia."},
+  {t:"c", p:2, term:"Princípio geral do aumento de resistência",
+   ans:"<strong>Impedir/dificultar o movimento das discordâncias.</strong> Mecanismos: <strong>1)</strong> solução sólida (elemento de liga), <strong>2)</strong> redução do tamanho de grão, <strong>3)</strong> encruamento, <strong>4)</strong> tratamento térmico (transformação de fase)."},
+  {t:"c", p:2, term:"Endurecimento por solução sólida",
+   ans:"Átomos de soluto <strong>distorcem a rede</strong> (menores → tração; maiores → compressão) e se alojam perto das discordâncias, <strong>ancorando-as</strong>. Por isso <strong>ligas são sempre mais resistentes que os metais puros</strong>."},
+  {t:"c", p:2, term:"Refino de grão e equação de Hall-Petch",
+   ans:"O contorno de grão é <strong>barreira</strong> ao movimento das discordâncias (muda a orientação cristalina). <strong>σe = σ₀ + Ke·d^(−1/2)</strong>: grão menor ⇒ maior limite de escoamento. É o mecanismo que aumenta resistência <strong>e também a tenacidade</strong>. Contornos de <strong>baixo ângulo</strong> (&lt;15°) são pouco eficazes."},
+  {t:"c", p:2, term:"Encruamento (endurecimento por deformação a frio)",
+   ans:"A deformação <strong>multiplica as discordâncias</strong>; as interações entre elas (repulsivas) travam o movimento ⇒ <strong>↑ resistência e limite de escoamento, ↓ ductilidade</strong>. É removido por tratamento térmico (<strong>recozimento/recristalização</strong>)."},
+  {t:"c", p:2, term:"Recozimento do encruado: recuperação → recristalização → crescimento de grão",
+   ans:"<strong>Recuperação:</strong> alívio de tensões; propriedades <strong>físicas</strong> (condutividade) voltam.\n<strong>Recristalização:</strong> grãos novos <strong>equiaxiais e livres de deformação</strong>; propriedades mecânicas voltam; força motriz = energia armazenada na deformação.\n<strong>Crescimento de grão:</strong> grandes comem os pequenos (força motriz = ↓ energia de contorno); grão maior ⇒ material mais <strong>mole</strong>."},
+  {t:"c", p:2, term:"Temperatura de recristalização",
+   ans:"Temperatura na qual a recristalização se completa em <strong>1 hora</strong>. Fica entre <strong>1/3 e 1/2 da temperatura de fusão</strong> do metal."},
+  {t:"c", p:2, term:"Fase — definição",
+   ans:"Porção <strong>homogênea</strong> do material com propriedades físicas e/ou químicas uniformes. Água + gelo = <strong>2 fases</strong> (mesma química, física distinta). Polimorfos são fases diferentes: Fe α (CCC) ≠ Fe γ (CFC)."},
+  {t:"c", p:2, term:"Limite de solubilidade e soluções sólidas",
+   ans:"<strong>Limite de solubilidade:</strong> concentração máxima de soluto que forma uma única fase.\nSolução sólida <strong>substitucional</strong> (soluto no lugar do solvente) × <strong>intersticial</strong> (soluto nos interstícios — ex.: C no Fe)."},
+  {t:"c", p:2, term:"Linhas do diagrama: liquidus, solidus, solvus",
+   ans:"<strong>Liquidus:</strong> acima dela, só líquido. <strong>Solidus:</strong> abaixo dela, só sólido. <strong>Solvus:</strong> limite de solubilidade entre fases <strong>sólidas</strong> (separa α de α+β). Nas regiões bifásicas usa-se a <strong>linha de amarração</strong>."},
+  {t:"c", p:2, term:"Regra da alavanca",
+   ans:"Fração de uma fase = <strong>braço OPOSTO</strong> ÷ comprimento total da linha de amarração:\n<strong>W_L = (Cs − C₀)/(Cs − C_L)</strong> · <strong>W_S = (C₀ − C_L)/(Cs − C_L)</strong>\n⚠️ Usar sempre o braço do lado <strong>contrário</strong> à fase calculada."},
+  {t:"c", p:2, term:"Reação eutética × eutetóide",
+   ans:"<strong>Eutética:</strong> L → α + β (isotérmica; produto em <strong>lamelas</strong>).\n<strong>Eutetóide:</strong> <strong>sólido</strong> → 2 sólidos (γ → α + Fe₃C).\nRegra: “-óide” = <strong>sem líquido</strong>. Ambas são reações <strong>invariantes</strong> (zero grau de liberdade)."},
+  {t:"c", p:2, term:"Fases do sistema Fe-C",
+   ans:"<strong>Ferrita α:</strong> CCC, dissolve no máx <strong>0,022%C</strong>, mole e dúctil.\n<strong>Austenita γ:</strong> CFC, dissolve até <strong>2,14%C</strong> (a 1147 °C), estável só acima de 727 °C.\n<strong>Cementita Fe₃C:</strong> <strong>6,7%C</strong>, muito <strong>dura e frágil</strong>, metaestável.\n<strong>Ferrita δ:</strong> CCC de alta temperatura."},
+  {t:"c", p:2, term:"Aço × ferro fundido — faixas de carbono",
+   ans:"<strong>Aço:</strong> 0,008 a <strong>2,14%p C</strong>.\n<strong>Ferro fundido:</strong> 2,14 a <strong>6,7%p C</strong> (na prática &lt; 4,5%)."},
+  {t:"c", p:2, term:"Eutetóide do aço e perlita",
+   ans:"Em <strong>0,76%C e 727 °C</strong>: γ → α + Fe₃C. O produto é a <strong>perlita</strong>: lamelas alternadas de <strong>ferrita</strong> (claras, grossas) e <strong>cementita</strong> (escuras, finas), em “colônias”."},
+  {t:"c", p:2, term:"Aço hipoeutetóide × hipereutetóide",
+   ans:"<strong>Hipo (&lt;0,76%C):</strong> ferrita <strong>proeutetóide</strong> (formada acima de 727 °C) + perlita.\n<strong>Hiper (0,76–2,14%C):</strong> rede de <strong>cementita proeutetóide</strong> nos contornos de grão da austenita + perlita."},
+  {t:"c", p:2, term:"Por que a austenita dissolve mais carbono que a ferrita?",
+   ans:"A γ é <strong>CFC</strong>, com interstícios maiores que os da CCC. O carbono ocupa posições <strong>INTERSTICIAIS</strong> — dizer que ocupa posições “substitucionais” é pegadinha de prova."},
+  {t:"c", p:2, term:"Curvas TTT — produtos da decomposição da austenita",
+   ans:"<strong>Perlita grossa:</strong> transformação em T alta (perto de 727 °C); <strong>perlita fina:</strong> T menor.\n<strong>Bainita:</strong> abaixo do “nariz” da curva.\n<strong>Martensita:</strong> resfriamento <strong>rápido</strong> que evita o nariz (têmpera)."},
+  {t:"c", p:2, term:"Martensita — como se forma e como é?",
+   ans:"Transformação <strong>SEM difusão</strong> (adifusional, quase instantânea; depende só da temperatura — linhas Ms/Mf). Estrutura <strong>tetragonal</strong> supersaturada de C. Muito <strong>dura e frágil</strong> → exige <strong>revenimento</strong>."},
+
+  // ---------- QUESTÕES P2 ----------
+  {t:"q", p:2, n:9, stem:"Sobre discordâncias é correto afirmar que:",
+   opts:[["A","são defeitos pontuais"],["B","a direção de escorregamento varia de grão para grão e, na maioria dos grãos, há 2 sistemas de escorregamento operando"],["C","as discordâncias se movem com a mesma facilidade em todos os planos e direções cristalográficas"],["D","as interações entre discordâncias são somente de tração e compressão"],["E","na discordância em aresta o vetor de Burgers é paralelo à linha de discordância"]],
+   a:"B", at:"direção varia de grão a grão; ~2 sistemas por grão",
+   ex:"Questão da prova antiga. Discordâncias são defeitos <b>lineares</b> (A errada); movem-se preferencialmente nos <b>planos/direções mais densos</b> (C errada); interações incluem <b>atração e repulsão</b> (D errada); na aresta o b é <b>perpendicular</b> à linha (E errada)."},
+  {t:"q", p:2, n:10, stem:"Num diagrama binário com reação L → α + β em um ponto invariante, essa reação e esse ponto são chamados de:",
+   opts:[["A","eutetóide"],["B","peritético"],["C","eutético"],["D","monotético"],["E","ponto de fusão congruente"]],
+   a:"C", at:"eutético",
+   ex:"Se há <b>líquido</b> se transformando em duas fases sólidas, é <b>eutético</b>. <b>Eutetóide</b> é sólido → 2 sólidos (γ → α + Fe₃C). Essa troca foi pegadinha na prova antiga."},
+  {t:"q", p:2, n:11, stem:"Um aço com 0,4%p C é resfriado lentamente até logo abaixo de 727 °C. Pela regra da alavanca (Cα = 0,022; C_Fe₃C = 6,7), as frações aproximadas das fases são:",
+   opts:[["A","94% ferrita e 6% cementita"],["B","85% ferrita e 15% cementita"],["C","50% ferrita e 50% cementita"],["D","76% ferrita e 24% cementita"],["E","6% ferrita e 94% cementita"]],
+   a:"A", at:"≈94% α e ≈6% Fe₃C",
+   ex:"Wα = (6,7 − 0,4)/(6,7 − 0,022) = 6,3/6,68 ≈ <b>0,94</b>. Braço <b>oposto</b> sobre o total. Mesmo número da prova antiga."},
+  {t:"q", p:2, n:12, stem:"Sobre o diagrama Fe-C, assinale a alternativa INCORRETA:",
+   opts:[["A","apresenta reação invariante do tipo eutética e do tipo eutetóide"],["B","a ferrita α é CCC com solubilidade máxima de 0,022%p C"],["C","a 727 °C e 0,76%p C observa-se o ponto EUTÉTICO do aço"],["D","a austenita γ é CFC e dissolve mais carbono que a ferrita"],["E","estão presentes as fases líquido, ferrita, austenita, cementita e ferrita δ"]],
+   a:"C", at:"727 °C / 0,76%C = eutetóide, não eutético (INCORRETA)",
+   ex:"O ponto a 727 °C e 0,76%C é o <b>EUTETÓIDE</b> (γ → α + Fe₃C, sem líquido). O eutético do Fe-C fica a 1147 °C e 4,3%C."},
+  {t:"q", p:2, n:13, stem:"Qual mecanismo de aumento de resistência também aumenta a tenacidade do material?",
+   opts:[["A","encruamento"],["B","endurecimento por solução sólida"],["C","redução do tamanho de grão"],["D","crescimento de grão"],["E","têmpera (martensita) sem revenimento"]],
+   a:"C", at:"refino de grão",
+   ex:"O <b>refino de grão</b> (Hall-Petch) é o único que aumenta resistência <b>e</b> tenacidade. Encruamento e solução sólida derrubam ductilidade; crescimento de grão <b>amolece</b>."},
+  {t:"q", p:2, n:14, stem:"Sobre o encruamento (V/F):\nI. Aumenta a densidade de discordâncias do metal\nII. Aumenta a ductilidade do material\nIII. Pode ser removido por recozimento (recristalização)\nIV. É o endurecimento produzido pela deformação plástica a frio",
+   opts:[["A","V – F – V – V"],["B","V – V – F – F"],["C","F – F – V – V"],["D","V – F – F – V"],["E","V – V – V – V"]],
+   a:"A", at:"V – F – V – V",
+   ex:"II é falsa: o encruamento <b>reduz a ductilidade</b> (a densidade de discordâncias vai de ~10³ para 10⁹–10¹⁰/mm²)."},
+  {t:"q", p:2, n:15, stem:"Segundo a equação de Hall-Petch, σe = σ₀ + Ke·d^(−1/2), pode-se afirmar que:",
+   opts:[["A","quanto maior o grão, maior o limite de escoamento"],["B","quanto menor o grão, maior o limite de escoamento"],["C","o tamanho de grão não afeta o escoamento"],["D","a equação vale para qualquer tamanho de grão"],["E","grãos finos tornam o material menos tenaz"]],
+   a:"B", at:"grão menor ⇒ σe maior",
+   ex:"d entra com expoente <b>−1/2</b>: reduzir d aumenta σe. Grão fino também <b>aumenta a tenacidade</b>; a equação <b>não vale</b> para grãos muito grosseiros ou muito finos (D e E erradas)."},
+  {t:"q", p:2, n:16, stem:"Sobre a martensita nos aços, é correto afirmar:",
+   opts:[["A","forma-se por difusão lenta do carbono"],["B","forma-se em resfriamento rápido, sem difusão, e é dura e frágil"],["C","é mais mole que a perlita"],["D","forma-se apenas no “nariz” da curva TTT"],["E","é uma fase de equilíbrio do diagrama Fe-C"]],
+   a:"B", at:"resfriamento rápido, sem difusão, dura e frágil",
+   ex:"A martensita é <b>adifusional</b> e <b>metaestável</b> (não aparece no diagrama de equilíbrio). Forma-se <b>evitando</b> o nariz da TTT; é a mais dura das microestruturas do aço."},
+  {t:"q", p:2, n:17, stem:"Um metal severamente deformado a frio é aquecido. A sequência correta de estágios e seu efeito é:",
+   opts:[["A","recristalização → recuperação → crescimento de grão; os grãos ficam alongados"],["B","recuperação → recristalização → crescimento de grão; a recristalização forma grãos equiaxiais livres de deformação"],["C","crescimento de grão → recristalização → recuperação; o material endurece"],["D","recuperação → crescimento de grão → recristalização; a dureza aumenta"],["E","apenas recuperação; as propriedades mecânicas voltam ao original"]],
+   a:"B", at:"recuperação → recristalização → crescimento de grão",
+   ex:"Na <b>recuperação</b> voltam as propriedades físicas; na <b>recristalização</b> nascem grãos <b>equiaxiais</b> livres de deformação (voltam as propriedades mecânicas); depois o <b>grão cresce</b> e o material amolece."},
+
+  // ================= BLOCO P3 — TRATAMENTOS TÉRMICOS, LIGAS E FABRICAÇÃO =================
+  // ---------- CONCEITOS P3 ----------
+  {t:"c", p:3, term:"Têmpera — o que faz?",
    ans:"Resfriamento <strong>rápido</strong> do aço → forma <strong>martensita</strong>. Aumenta muito a <strong>dureza</strong> e a resistência, mas deixa o material <strong>frágil</strong>. Quase sempre seguida de revenimento."},
-  {t:"c", term:"Revenimento — objetivo (após a têmpera)",
+  {t:"c", p:3, term:"Revenimento — objetivo (após a têmpera)",
    ans:"<strong>Reduz a fragilidade</strong> da martensita e <strong>aumenta a tenacidade</strong>, com pequena perda de dureza. Alivia tensões internas geradas na têmpera."},
-  {t:"c", term:"Recozimento — para que serve?",
+  {t:"c", p:3, term:"Recozimento — para que serve?",
    ans:"<strong>Amolece</strong> o aço: aumenta a <strong>ductilidade</strong>, alivia tensões e <strong>melhora a usinabilidade</strong>. É o tratamento indicado <strong>antes de usinar</strong> uma peça."},
-  {t:"c", term:"Normalização",
+  {t:"c", p:3, term:"Normalização",
    ans:"Aquecimento seguido de resfriamento <strong>ao ar</strong>. <strong>Refina o grão</strong> e homogeneíza a microestrutura. Propriedades intermediárias entre recozido e temperado."},
-  {t:"c", term:"Cementação — o que muda na superfície?",
+  {t:"c", p:3, term:"Cementação — o que muda na superfície?",
    ans:"<strong>Aumenta</strong> o teor de <strong>carbono</strong> na superfície (difusão de C). Depois da têmpera → superfície <strong>dura</strong> com núcleo tenaz. ⚠️ Ela AUMENTA o carbono, nunca reduz."},
-  {t:"c", term:"Nitretação",
+  {t:"c", p:3, term:"Nitretação",
    ans:"Enriquece a superfície com <strong>nitrogênio</strong> → alta dureza superficial e resistência ao desgaste, feita em <strong>baixa temperatura</strong> (pouca distorção da peça)."},
-  {t:"c", term:"Eixo: superfície dura + núcleo tenaz — como?",
+  {t:"c", p:3, term:"Eixo: superfície dura + núcleo tenaz — como?",
    ans:"<strong>Cementação (ou nitretação) + têmpera + revenimento.</strong> A superfície fica resistente ao desgaste e o núcleo continua tenaz para absorver impacto."},
-  {t:"c", term:"Material para cabos de energia elétrica",
+  {t:"c", p:3, term:"Material para cabos de energia elétrica",
    ans:"<strong>Cobre.</strong> Reúne elevada <strong>condutividade elétrica</strong>, boa <strong>ductilidade</strong> e fácil conformação (trefilado em fios)."},
-  {t:"c", term:"Ligas de alumínio — propriedades-chave",
+  {t:"c", p:3, term:"Ligas de alumínio — propriedades-chave",
    ans:"Baixa <strong>densidade</strong> (leves), ótima relação <strong>resistência/peso</strong> (aeronáutica), a camada de <strong>óxido</strong> protege da corrosão. ⚠️ Módulo de elasticidade <strong>menor</strong> que o do aço (~70 vs ~210 GPa) → alumínio é <strong>menos rígido</strong>."},
-  {t:"c", term:"Estrutura de edifício: resistência + solda + baixo custo",
+  {t:"c", p:3, term:"Estrutura de edifício: resistência + solda + baixo custo",
    ans:"<strong>Aço baixo carbono.</strong> Boa soldabilidade, baixo custo e resistência adequada. (Aço-ferramenta é caro/duro; ferro fundido branco é frágil e não soldável.)"},
-  {t:"c", term:"Ferro fundido cinzento",
+  {t:"c", p:3, term:"Ferro fundido cinzento",
    ans:"Grafita em <strong>lamelas</strong>. Excelente <strong>amortecimento de vibrações</strong> e boa usinabilidade; frágil sob tração. Usado em bases de máquina e blocos de motor."},
-  {t:"c", term:"Ferro fundido nodular (dúctil)",
+  {t:"c", p:3, term:"Ferro fundido nodular (dúctil)",
    ans:"Grafita <strong>esferoidal</strong> (nódulos) → <strong>maior ductilidade</strong> e resistência que o cinzento. Escolhido quando se precisa de tenacidade."},
-  {t:"c", term:"Ferro fundido branco",
+  {t:"c", p:3, term:"Ferro fundido branco",
    ans:"Carbono na forma de <strong>cementita</strong> (<strong>sem grafita</strong>). Muito <strong>duro e frágil</strong>, ótima resistência ao desgaste e <strong>péssima usinabilidade</strong>. Grafita esferoidal é do nodular, não do branco."},
-  {t:"c", term:"Conformação: laminação · extrusão · trefilação · forjamento",
+  {t:"c", p:3, term:"Conformação: laminação · extrusão · trefilação · forjamento",
    ans:"<strong>Laminação</strong> → reduz a espessura (chapas). <strong>Extrusão</strong> → perfis de seção transversal constante. <strong>Trefilação</strong> → fios. <strong>Forjamento</strong> → melhora as propriedades mecânicas (orienta o grão)."},
-  {t:"c", term:"Seleção de materiais na indústria química",
+  {t:"c", p:3, term:"Seleção de materiais na indústria química",
    ans:"Resistência à <strong>corrosão</strong> é critério central (vida útil + segurança). Considerar <strong>temperatura, pressão e natureza dos fluidos</strong>. Também pesam <strong>custo, disponibilidade e fabricabilidade</strong>. Propriedades mecânicas não são o único fator."},
-  {t:"c", term:"Esferoidização",
+  {t:"c", p:3, term:"Esferoidização",
    ans:"Recozimento especial que arredonda a <strong>cementita</strong> → aço mais macio e <strong>usinável</strong>. Aplicado em aços de <strong>alto carbono</strong> antes da usinagem."},
 
-  // ---------- QUESTÕES ----------
-  {t:"q", n:1, stem:"Uma empresa quer fabricar cabos para transmissão de energia elétrica: material com elevada condutividade elétrica, boa ductilidade e fácil conformação. O mais indicado é:",
+  // ---------- QUESTÕES P3 ----------
+  {t:"q", p:3, n:18, stem:"Uma empresa quer fabricar cabos para transmissão de energia elétrica: material com elevada condutividade elétrica, boa ductilidade e fácil conformação. O mais indicado é:",
    opts:[["A","Ferro fundido"],["B","Aço inoxidável"],["C","Titânio"],["D","Cobre"],["E","Magnésio"]],
    a:"D", at:"Cobre",
    ex:"O <b>cobre</b> é o melhor condutor entre as opções, além de dúctil e fácil de trefilar em fios."},
-  {t:"q", n:2, stem:"Após a têmpera, realiza-se o revenimento com o objetivo de:",
+  {t:"q", p:3, n:19, stem:"Após a têmpera, realiza-se o revenimento com o objetivo de:",
    opts:[["A","aumentar ainda mais a dureza"],["B","reduzir a fragilidade da martensita e aumentar a tenacidade"],["C","formar perlita"],["D","reduzir o teor de carbono"],["E","promover recristalização completa"]],
    a:"B", at:"reduzir a fragilidade da martensita e aumentar a tenacidade",
    ex:"O revenimento <b>alivia a fragilidade</b> deixada pela têmpera e devolve <b>tenacidade</b>, sacrificando um pouco de dureza."},
-  {t:"q", n:3, stem:"Sobre as ligas de alumínio, assinale a alternativa INCORRETA:",
+  {t:"q", p:3, n:20, stem:"Sobre as ligas de alumínio, assinale a alternativa INCORRETA:",
    opts:[["A","usadas na aeronáutica pela relação resistência/peso"],["B","boa resistência à corrosão pela camada de óxido"],["C","densidade inferior à dos aços"],["D","empregadas para reduzir a massa de componentes"],["E","módulo de elasticidade superior ao do aço, mais rígidas"]],
    a:"E", at:"módulo de elasticidade superior ao do aço (INCORRETA)",
    ex:"O módulo de elasticidade do alumínio (~70 GPa) é <b>menor</b> que o do aço (~210 GPa) → o alumínio é <b>menos rígido</b>, não mais."},
-  {t:"q", n:4, stem:"Tratamentos térmicos dos aços (V/F):\nI. A têmpera aumenta muito a dureza\nII. O revenimento reduz a fragilidade da martensita\nIII. O recozimento aumenta a ductilidade\nIV. A cementação reduz o carbono da superfície",
+  {t:"q", p:3, n:21, stem:"Tratamentos térmicos dos aços (V/F):\nI. A têmpera aumenta muito a dureza\nII. O revenimento reduz a fragilidade da martensita\nIII. O recozimento aumenta a ductilidade\nIV. A cementação reduz o carbono da superfície",
    opts:[["A","V – V – F – F"],["B","V – F – V – F"],["C","F – V – V – V"],["D","V – V – V – F"],["E","F – F – V – V"]],
    a:"D", at:"V – V – V – F",
    ex:"I, II e III verdadeiras. <b>IV é falsa</b>: a cementação <b>aumenta</b> o carbono da superfície."},
-  {t:"q", n:5, stem:"Na fabricação de um eixo automotivo deseja-se elevada dureza superficial SEM comprometer a tenacidade do núcleo. Tratamento mais adequado:",
+  {t:"q", p:3, n:22, stem:"Na fabricação de um eixo automotivo deseja-se elevada dureza superficial SEM comprometer a tenacidade do núcleo. Tratamento mais adequado:",
    opts:[["A","Recozimento"],["B","Cementação seguida de têmpera e revenimento"],["C","Normalização"],["D","Esferoidização"],["E","Homogeneização"]],
    a:"B", at:"Cementação + têmpera + revenimento",
    ex:"O endurecimento superficial (cementação) seguido de têmpera e revenimento dá <b>superfície dura</b> mantendo o <b>núcleo tenaz</b>."},
-  {t:"q", n:6, stem:"Estrutura metálica de um edifício: material com boa resistência mecânica, elevada soldabilidade e baixo custo. O mais indicado é:",
+  {t:"q", p:3, n:23, stem:"Estrutura metálica de um edifício: material com boa resistência mecânica, elevada soldabilidade e baixo custo. O mais indicado é:",
    opts:[["A","Ferro fundido branco"],["B","Aço ferramenta"],["C","Aço baixo carbono"],["D","Liga de magnésio"],["E","Bronze"]],
    a:"C", at:"Aço baixo carbono",
    ex:"O <b>aço baixo carbono</b> é soldável, barato e resistente o suficiente para estruturas. As outras opções falham em custo, soldabilidade ou fragilidade."},
-  {t:"q", n:7, stem:"Sobre os ferros fundidos, assinale a alternativa INCORRETA:",
+  {t:"q", p:3, n:24, stem:"Sobre os ferros fundidos, assinale a alternativa INCORRETA:",
    opts:[["A","cinzento: ótimo amortecimento de vibrações"],["B","nodular: mais dúctil que o cinzento"],["C","branco: dureza elevada pela cementita"],["D","branco: ótima usinabilidade pela grafita esferoidal"],["E","tipos com aplicações distintas conforme a microestrutura"]],
    a:"D", at:"branco tem ótima usinabilidade (INCORRETA)",
    ex:"O ferro fundido <b>branco não tem grafita</b> (C está como cementita): é duro, frágil e de <b>péssima usinabilidade</b>. Grafita esferoidal é do <b>nodular</b>."},
-  {t:"q", n:8, stem:"Processos de conformação mecânica (V/F):\nI. A laminação reduz a espessura de chapas\nII. A extrusão fabrica perfis de seção transversal constante\nIII. A trefilação é empregada na fabricação de fios\nIV. O forjamento pode melhorar as propriedades mecânicas",
+  {t:"q", p:3, n:25, stem:"Processos de conformação mecânica (V/F):\nI. A laminação reduz a espessura de chapas\nII. A extrusão fabrica perfis de seção transversal constante\nIII. A trefilação é empregada na fabricação de fios\nIV. O forjamento pode melhorar as propriedades mecânicas",
    opts:[["A","V – V – V – V"],["B","V – V – F – V"],["C","V – F – V – F"],["D","F – V – V – V"],["E","F – F – V – V"]],
    a:"A", at:"V – V – V – V",
    ex:"<b>Todas verdadeiras.</b> Cada processo descrito corresponde exatamente à sua função de conformação."},
-  {t:"q", n:9, stem:"Uma peça de aço será usinada antes do tratamento térmico final. Para facilitar a usinagem, recomenda-se realizar previamente:",
+  {t:"q", p:3, n:26, stem:"Uma peça de aço será usinada antes do tratamento térmico final. Para facilitar a usinagem, recomenda-se realizar previamente:",
    opts:[["A","têmpera"],["B","cementação"],["C","nitretação"],["D","recozimento"],["E","revenimento"]],
    a:"D", at:"recozimento",
    ex:"O <b>recozimento amolece</b> o aço e melhora a usinabilidade. Têmpera/cementação/nitretação endureceriam a peça, dificultando a usinagem."},
-  {t:"q", n:10, stem:"Reator para ácido sulfúrico concentrado — critérios de seleção de materiais (V/F):\nI. Resistência à corrosão é critério principal (vida útil + segurança)\nII. Basta considerar as propriedades mecânicas; a corrosão é totalmente eliminada por manutenção\nIII. Temperatura, pressão e natureza dos fluidos importam na escolha\nIV. Fatores econômicos, disponibilidade e fabricabilidade também influenciam",
+  {t:"q", p:3, n:27, stem:"Reator para ácido sulfúrico concentrado — critérios de seleção de materiais (V/F):\nI. Resistência à corrosão é critério principal (vida útil + segurança)\nII. Basta considerar as propriedades mecânicas; a corrosão é totalmente eliminada por manutenção\nIII. Temperatura, pressão e natureza dos fluidos importam na escolha\nIV. Fatores econômicos, disponibilidade e fabricabilidade também influenciam",
    opts:[["A","V – V – F – V"],["B","V – F – V – V"],["C","F – F – V – V"],["D","V – F – F – V"],["E","F – V – V – F"]],
    a:"B", at:"V – F – V – V",
    ex:"I, III e IV verdadeiras. <b>II é falsa</b>: não se considera apenas o mecânico e a corrosão <b>não</b> é totalmente eliminada por manutenção."},
@@ -267,30 +461,33 @@ const CARDS = [
 const $ = s => document.querySelector(s);
 const card=$("#card"), front=$("#front"), back=$("#back"), empty=$("#empty");
 let order = CARDS.map((_,i)=>i);
-let deck="all", hideKnown=false, cursor=0, flipped=false;
+let deck="all", pdeck="all", hideKnown=false, cursor=0, flipped=false;
 const known = new Set();
 
-function deckMatch(id){ return deck==="all" || CARDS[id].t===deck; }
+function deckMatch(id){
+  const c = CARDS[id];
+  return (deck==="all" || c.t===deck) && (pdeck==="all" || String(c.p)===pdeck);
+}
 function visible(){ return order.filter(id => deckMatch(id) && (!hideKnown || !known.has(id))); }
 
 function renderFront(c){
   if(c.t==="c"){
-    return '<div class="tag"><span class="lbl">Conceito</span><span class="side">pergunta</span></div>'+
+    return '<div class="tag"><span class="lbl">Conceito</span><span class="side">bloco P'+c.p+'</span></div>'+
            '<div class="term">'+c.term+'</div>'+
            '<div class="hint">↺ toque para ver a resposta</div>';
   }
   const opts = c.opts.map(o=>'<li><span class="k">'+o[0]+'</span><span>'+o[1]+'</span></li>').join("");
-  return '<div class="tag"><span class="lbl">Questão '+c.n+'</span><span class="side">enunciado</span></div>'+
+  return '<div class="tag"><span class="lbl">Questão '+c.n+'</span><span class="side">bloco P'+c.p+'</span></div>'+
          '<div class="stem">'+c.stem+'</div>'+
          '<ul class="opts">'+opts+'</ul>'+
          '<div class="hint">↺ toque para o gabarito</div>';
 }
 function renderBack(c){
   if(c.t==="c"){
-    return '<div class="tag"><span class="lbl">Resposta</span><span class="side">conceito</span></div>'+
-           '<div class="answer">'+c.ans+'</div>';
+    return '<div class="tag"><span class="lbl">Resposta</span><span class="side">bloco P'+c.p+'</span></div>'+
+           '<div class="answer">'+c.ans.replace(/\n/g,"<br>")+'</div>';
   }
-  return '<div class="tag"><span class="lbl">Gabarito · Q'+c.n+'</span><span class="side">resposta</span></div>'+
+  return '<div class="tag"><span class="lbl">Gabarito · Q'+c.n+'</span><span class="side">bloco P'+c.p+'</span></div>'+
          '<div class="gab"><span class="letter">'+c.a+'</span><span class="txt">'+c.at+'</span></div>'+
          '<div class="explain">'+c.ex+'</div>';
 }
@@ -342,10 +539,15 @@ function shuffle(){
 }
 
 // events
-document.querySelectorAll(".chip").forEach(ch=>ch.addEventListener("click",()=>{
-  document.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed","false"));
+document.querySelectorAll(".chip[data-deck]").forEach(ch=>ch.addEventListener("click",()=>{
+  document.querySelectorAll(".chip[data-deck]").forEach(x=>x.setAttribute("aria-pressed","false"));
   ch.setAttribute("aria-pressed","true");
   deck=ch.dataset.deck; cursor=0; render();
+}));
+document.querySelectorAll(".chip[data-pdeck]").forEach(ch=>ch.addEventListener("click",()=>{
+  document.querySelectorAll(".chip[data-pdeck]").forEach(x=>x.setAttribute("aria-pressed","false"));
+  ch.setAttribute("aria-pressed","true");
+  pdeck=ch.dataset.pdeck; cursor=0; render();
 }));
 card.addEventListener("click", flip);
 $("#flip").addEventListener("click", flip);
@@ -354,8 +556,9 @@ $("#next").addEventListener("click", ()=>go(1));
 $("#know").addEventListener("click", markKnown);
 $("#hide").addEventListener("click", ()=>{ hideKnown=!hideKnown; cursor=0; render(); });
 $("#shuffle").addEventListener("click", shuffle);
-$("#reset").addEventListener("click", ()=>{ known.clear(); hideKnown=false; deck="all";
-  document.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed", x.dataset.deck==="all"?"true":"false"));
+$("#reset").addEventListener("click", ()=>{ known.clear(); hideKnown=false; deck="all"; pdeck="all";
+  document.querySelectorAll(".chip[data-deck]").forEach(x=>x.setAttribute("aria-pressed", x.dataset.deck==="all"?"true":"false"));
+  document.querySelectorAll(".chip[data-pdeck]").forEach(x=>x.setAttribute("aria-pressed", x.dataset.pdeck==="all"?"true":"false"));
   order=CARDS.map((_,i)=>i); cursor=0; render(); });
 
 document.addEventListener("keydown",e=>{
