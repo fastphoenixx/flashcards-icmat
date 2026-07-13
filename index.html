@@ -43,6 +43,8 @@
   .chip:hover{border-color:rgba(255,255,255,.22); color:var(--ink)}
   .chip[aria-pressed="true"]{background:#fff; color:#15171c; border-color:#fff; font-weight:600}
   .chip.ghost[aria-pressed="true"]{background:var(--steel-soft); color:var(--steel); border-color:rgba(111,176,224,.4)}
+  .chip.star{color:var(--heat); border-color:rgba(255,122,51,.4)}
+  .chip.star[aria-pressed="true"]{background:var(--heat); color:#1a0f06; border-color:var(--heat)}
 
   .meter{display:flex; align-items:center; gap:12px; margin-top:16px}
   .bar{flex:1; height:5px; border-radius:99px; background:var(--surface-2); overflow:hidden}
@@ -147,14 +149,15 @@
     </div>
     <div class="chips" role="group" aria-label="Filtrar por bloco de prova">
       <button class="chip" data-pdeck="all" aria-pressed="true">Semestre</button>
+      <button class="chip star" data-pdeck="m" aria-pressed="false">★ Modelo real (10)</button>
       <button class="chip" data-pdeck="1" aria-pressed="false">P1 · cristais/prop. mec.</button>
       <button class="chip" data-pdeck="2" aria-pressed="false">P2 · discord./fases</button>
       <button class="chip" data-pdeck="3" aria-pressed="false">P3 · trat. térm./ligas</button>
     </div>
     <div class="meter">
-      <span class="count">carta <b id="pos">1</b> / <span id="total">97</span></span>
+      <span class="count">carta <b id="pos">1</b> / <span id="total">107</span></span>
       <div class="bar"><i id="progfill"></i></div>
-      <span class="dom" id="dom">dominadas 0/97</span>
+      <span class="dom" id="dom">dominadas 0/107</span>
     </div>
   </div>
 </header>
@@ -194,6 +197,58 @@
 
 <script>
 const CARDS = [
+  // ================= ★ MODELO REAL DA SUBSTITUTIVA (prova-modelo recebida em 13/07) =================
+  {t:"q", p:"m", n:"Modelo Q1", multi:true,
+   stem:"Marque a(s) correta(s) sobre dureza:",
+   opts:[["A","Dureza é a medida da resistência de um material à deformação plástica localizada"],["B","A dureza Rockwell C é usada para medir dureza de materiais mais resistentes à deformação"],["C","Todos os tipos de dureza podem ser aplicados a um mesmo material (ex.: liga de Al)"],["D","Quanto mais duro o material, maior a dureza — ou seja, menor resistência mecânica e maior ductilidade"],["E","São exemplos de ensaios de dureza: Vickers, Brinell, Rockwell A, B e C"]],
+   a:"A B E", at:"Corretas: A, B, E (C é aceitável). Errada: D.",
+   ex:"<b>D é a pegadinha:</b> maior dureza ⇒ MAIOR resistência mecânica e MENOR ductilidade (a alternativa afirma o contrário). A (definição), B (HRC = cone de diamante p/ materiais duros) e E (exemplos de ensaios) estão certas; C é genericamente verdadeira."},
+  {t:"q", p:"m", n:"Modelo Q2", multi:true,
+   stem:"Sobre defeitos na estrutura cristalina, é correto:",
+   opts:[["A","O grão é considerado um defeito de interface"],["B","Na deformação plástica é normal o movimento de discordâncias em aresta ocorrer junto com o movimento em espiral"],["C","O solvente é o elemento da liga em menor quantidade e o soluto o de maior quantidade"],["D","O contorno de grão se forma devido ao encontro de grãos com direções cristalográficas diferentes"]],
+   a:"B D", at:"Corretas: B e D.",
+   ex:"<b>B</b> descreve a discordância <b>mista</b> (aresta + espiral juntas). <b>D</b> é a definição de contorno de grão. <b>A</b> erra: o defeito de interface é o <b>contorno</b>, não o grão em si. <b>C</b> inverteu: solvente = MAIOR quantidade, soluto = MENOR."},
+  {t:"q", p:"m", n:"Modelo Q3",
+   stem:"Uma engrenagem sinterizada de AÇO BAIXO CARBONO precisa resistir ao desgaste/abrasão na superfície, mas manter elevada ductilidade e resistência ao impacto no núcleo. Qual tratamento executar?",
+   opts:[["A","Têmpera com posterior revenimento"],["B","Envelhecimento"],["C","Têmpera superficial"],["D","Austêmpera"],["E","Cementação"]],
+   a:"E", at:"Cementação",
+   ex:"O aço é <b>baixo carbono</b> → não endurece por têmpera direta (falta C). A <b>cementação</b> adiciona carbono só na superfície (difusão) e, após têmpera, dá <b>superfície dura + núcleo tenaz</b>. Têmpera/têmpera superficial exigem carbono suficiente na liga, que aqui não há."},
+  {t:"q", p:"m", n:"Modelo Q4",
+   stem:"Os ferros fundidos são ligas ferrosas com carbono acima de 2,14%p. Sobre eles, é CORRETO afirmar:",
+   opts:[["A","o ferro fundido cinzento tem boa ductilidade sob tração"],["B","a adição de Mg ou Ce antes da fundição produz grafita em nódulos/esferas — o ferro fundido dúctil (nodular)"],["C","ferros maleáveis têm baixo Si e, resfriados rapidamente, formam cementita ao invés de grafita"],["D","aquecer o ferro maleável a 800–900 °C decompõe a cementita em grafita (rosetas) — e isso é o ferro fundido branco"],["E","o cinzento tem grafita em flocos e por isso é ruim no amortecimento de vibrações"]],
+   a:"B", at:"B — Mg/Ce → ferro nodular (dúctil)",
+   ex:"<b>B</b> é a definição do ferro <b>nodular/dúctil</b>. A é falsa (cinzento é frágil sob tração). E é falsa e invertida: a grafita em flocos torna o cinzento <b>ótimo</b> no amortecimento. C e D confundem branco × maleável — o tratamento a 800–900 °C gera o <b>maleável</b>, não o branco."},
+  {t:"q", p:"m", n:"Modelo Q5", multi:true,
+   stem:"Marque a(s) correta(s) sobre o ensaio de tração:",
+   opts:[["A","a lei de Hooke é válida para toda a curva do ensaio"],["B","na deformação elástica a deformação não é permanente (reversível): o material retorna ao original ao retirar a força"],["C","a tenacidade é calculada pela área abaixo da região elástica da curva"],["D","o módulo de elasticidade e o coeficiente de Poisson são obtidos na região plástica da curva"],["E","a tensão de escoamento é o ponto onde o material passa da região elástica para a plástica"]],
+   a:"B E", at:"Corretas: B e E.",
+   ex:"A é falsa: Hooke vale só na <b>região elástica</b>. C é falsa: a área sob a região elástica é a <b>resiliência</b>; a tenacidade = área <b>total</b> até a ruptura. D é falsa: E e ν vêm da região <b>elástica</b>."},
+  {t:"q", p:"m", n:"Modelo Q6", multi:true,
+   stem:"Quais afirmações são verdadeiras sobre a estrutura cristalina CCC?",
+   opts:[["A","tem um átomo no centro da célula unitária"],["B","tem número de coordenação 8"],["C","tem FEA menor que a estrutura CFC"],["D","é encontrada em metais como ferro e cromo"]],
+   a:"A B C D", at:"Todas verdadeiras: A, B, C e D.",
+   ex:"CCC: átomo no centro do corpo ✔ · NC = <b>8</b> ✔ · FEA <b>0,68 &lt; 0,74</b> da CFC ✔ · Fe α e Cr cristalizam em CCC ✔. Todas corretas."},
+  {t:"q", p:"m", n:"Modelo Q7", multi:true,
+   stem:"Assinale a(s) INCORRETA(s) sobre o diagrama de fases Fe-C:",
+   opts:[["A","apresenta reação invariante do tipo eutética E do tipo eutetóide"],["B","a fase α é a ferrita, CCC, com solubilidade máxima de 0,022%p C"],["C","a 727 °C e 0,76%p C observa-se o ponto EUTÉTICO do aço"],["D","a estrutura γ tem a maior solubilidade de C por ser CFC, facilitando o C nas posições SUBSTITUCIONAIS da rede"],["E","existem as fases: líquido, ferrita, cementita, fase delta e austenita"]],
+   a:"C D", at:"Incorretas (que devem ser assinaladas): C e D.",
+   ex:"<b>C</b> erra: 727 °C / 0,76%C é o ponto <b>EUTETÓIDE</b> (o eutético fica a 1147 °C / 4,3%C). <b>D</b> erra: o carbono ocupa posições <b>INTERSTICIAIS</b>, não substitucionais. A, B e E estão corretas."},
+  {t:"q", p:"m", n:"Modelo Q8", multi:true,
+   stem:"Diagrama de curvas TTT com várias taxas de resfriamento — marque as corretas (conceitos-chave a dominar):",
+   opts:[["A","resfriamento lento → ferrita + perlita grosseira à temperatura ambiente"],["B","resfriamento intermediário pode dar mistura de perlita/bainita (± martensita)"],["C","resfriamento que passa pelo cotovelo e desce rápido → bainita/martensita"],["D","um resfriamento normal deixa AUSTENITA retida à temperatura ambiente"],["E","resfriamento extremamente rápido (evita o “nariz” da curva) → ~100% martensita"]],
+   a:"A E", at:"Corretas com segurança: A e E. Falsa: D.",
+   ex:"<b>A</b>: resfriar devagar cruza o campo da perlita ⇒ perlita <b>grossa</b>. <b>E</b>: têmpera (esquiva o “nariz”) ⇒ <b>martensita</b>. <b>D é falsa</b>: em liga Fe-C comum a austenita <b>não</b> permanece à temperatura ambiente — ela se transforma. Confira as cores no enunciado, mas o conceito de cada faixa é este."},
+  {t:"q", p:"m", n:"Modelo Q9",
+   stem:"Sobre as curvas TTT, é INCORRETO afirmar:",
+   opts:[["A","é possível encontrar austenita à temperatura ambiente numa liga Fe-C comum"],["B","ligas hipoeutetóides formam martensita com facilidade"],["C","maior taxa de resfriamento → microestrutura mais fina → maior dureza/resistência e menor ductilidade"],["D","perlita grosseira é mais dúctil e menos resistente que bainita superior"],["E","adicionar elementos de liga desloca a curva TTT para a ESQUERDA, facilitando a martensita"]],
+   a:"E", at:"A mais clássica: E (atenção: A e B também são falsas).",
+   ex:"<b>E</b> é o erro clássico: elementos de liga deslocam a TTT para a <b>DIREITA</b> (retardam a transformação) — é isso que facilita a martensita. Cuidado: <b>A</b> (austenita à T ambiente) e <b>B</b> (hipoeutetóide forma martensita “fácil” — na verdade seu nariz está mais à esquerda, dificultando) também são falsas. As verdadeiras são C e D."},
+  {t:"q", p:"m", n:"Modelo Q10",
+   stem:"Em um cristal cúbico, o plano (100) é perpendicular a qual direção?",
+   opts:[["A","[100]"],["B","[010]"],["C","[110]"],["D","[111]"]],
+   a:"A", at:"[100]",
+   ex:"No sistema <b>cúbico</b>, a direção [hkl] é sempre <b>perpendicular</b> ao plano (hkl) de mesmos índices. Logo o plano (100) ⟂ direção <b>[100]</b>."},
+
   // ================= BLOCO P1 — ESTRUTURA CRISTALINA, DEFEITOS/DIFUSÃO, PROP. MECÂNICAS =================
   // ---------- CONCEITOS P1 ----------
   {t:"c", p:1, term:"Célula unitária — o que é?",
@@ -472,22 +527,28 @@ function visible(){ return order.filter(id => deckMatch(id) && (!hideKnown || !k
 
 function renderFront(c){
   if(c.t==="c"){
-    return '<div class="tag"><span class="lbl">Conceito</span><span class="side">bloco P'+c.p+'</span></div>'+
+    return '<div class="tag"><span class="lbl">Conceito</span><span class="side">'+(c.p==="m"?"★ modelo real":"bloco P"+c.p)+'</span></div>'+
            '<div class="term">'+c.term+'</div>'+
            '<div class="hint">↺ toque para ver a resposta</div>';
   }
   const opts = c.opts.map(o=>'<li><span class="k">'+o[0]+'</span><span>'+o[1]+'</span></li>').join("");
-  return '<div class="tag"><span class="lbl">Questão '+c.n+'</span><span class="side">bloco P'+c.p+'</span></div>'+
+  return '<div class="tag"><span class="lbl">Questão '+c.n+'</span><span class="side">'+(c.p==="m"?"★ modelo real":"bloco P"+c.p)+'</span></div>'+
          '<div class="stem">'+c.stem+'</div>'+
          '<ul class="opts">'+opts+'</ul>'+
          '<div class="hint">↺ toque para o gabarito</div>';
 }
 function renderBack(c){
   if(c.t==="c"){
-    return '<div class="tag"><span class="lbl">Resposta</span><span class="side">bloco P'+c.p+'</span></div>'+
+    return '<div class="tag"><span class="lbl">Resposta</span><span class="side">'+(c.p==="m"?"★ modelo real":"bloco P"+c.p)+'</span></div>'+
            '<div class="answer">'+c.ans.replace(/\n/g,"<br>")+'</div>';
   }
-  return '<div class="tag"><span class="lbl">Gabarito · Q'+c.n+'</span><span class="side">bloco P'+c.p+'</span></div>'+
+  const head = '<div class="tag"><span class="lbl">Gabarito · '+c.n+'</span><span class="side">'+(c.p==="m"?"★ modelo real":"bloco P"+c.p)+'</span></div>';
+  if(c.multi){
+    return head+
+           '<div class="answer" style="margin:6px 0 0;font-weight:600">'+c.at+'</div>'+
+           '<div class="explain">'+c.ex+'</div>';
+  }
+  return head+
          '<div class="gab"><span class="letter">'+c.a+'</span><span class="txt">'+c.at+'</span></div>'+
          '<div class="explain">'+c.ex+'</div>';
 }
